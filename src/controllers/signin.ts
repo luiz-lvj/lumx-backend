@@ -37,6 +37,7 @@ export async function signin(req: Request, res: Response) {
         name, email, wallet_id, wallet_address, referral_code
       ) VALUES (
         $1, $2, $3, $4, $5
+      );
     `,[name, email, walletId, walletAddress, referralCode]);
 
 

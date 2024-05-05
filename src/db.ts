@@ -5,7 +5,9 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const host = process.env.DB_HOST;
 const port_database = process.env.DB_PORT;
-const database = process.env.DATAVASE_NAME;
+const database = process.env.DB_NAME;
+
+
 
 const connection = new Pool({
     user,

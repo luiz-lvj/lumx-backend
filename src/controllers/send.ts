@@ -15,7 +15,7 @@ export async function sendTokens(req: Request, res: Response) {
         }
 
         const amounts = await connection.query(`
-            SELECT reward_per_sell FROM events WHERE id = $1
+            SELECT reward_per_sell FROM events WHERE id = $1;
         `,[event_id]);
 
         const amount = amounts.rows[0].reward_per_sell;
