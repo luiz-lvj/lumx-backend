@@ -1,17 +1,24 @@
 import { Request, Response } from "express";
+import connection from "../db";
 
 
 export async function sendTokens(req: Request, res: Response) {
     try{
 
-        const {wallet_id, amount } = req.body;
+        const {wallet_id, event_id } = req.body;
 
-        if (!wallet_id || !amount){
+        if (!wallet_id || !event_id){
             res.status(400).send({
                 "error": "Bad Request"
             });
             return;
         }
+
+        const amounts = await connection.query(`
+            SELECT reward_per_sell FROM events WHERE id = $1
+        `,[event_id]);
+
+        const amount = amounts.rows[0].reward_per_sell;
 
         const options = {
             method: 'POST',
@@ -25,10 +32,6 @@ export async function sendTokens(req: Request, res: Response) {
                 "quantity": amount,
             })
         }
-
-        console.log(options)
-
-
 
         const url = process.env.LUMX_API_URL + "/transactions/mints";
 
