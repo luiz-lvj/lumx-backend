@@ -5,14 +5,20 @@ import connection from "../db";
 export async function sendTokens(req: Request, res: Response) {
     try{
 
-        const {wallet_id, event_id } = req.body;
+        const {referral_code, event_id } = req.body;
 
-        if (!wallet_id || !event_id){
+        if (!referral_code || !event_id){
             res.status(400).send({
                 "error": "Bad Request"
             });
             return;
         }
+
+        const wallets = await connection.query(`
+            SELECT wallet_id FROM influencers WHERE referral_code = $1;
+        `,[referral_code]);
+
+        const wallet_id = wallets.rows[0].wallet_id;
 
         const amounts = await connection.query(`
             SELECT reward_per_sell FROM events WHERE id = $1;
