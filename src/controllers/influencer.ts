@@ -47,9 +47,50 @@ export async function getBalanceByWalletId(req: Request, res: Response) {
             "balance": balance
         });
 
+
+
+    } catch(err) {
+        console.log(err);
+        res.status(500).send({
+            "error": "Internal Server Error"
+        });
+    }
+}
+
+export async function withdraw(req: Request, res: Response) {
+    try{
+
+        const { wallet_id, amount } = req.body;
+
+        if(!wallet_id || !amount) {
+            return res.status(400).send({
+                "error": "Bad Request"
+            })
+        }
+
+        const options = {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${process.env.LUMX_API_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "contractId": process.env.TOKEN_ID,
+                "from": wallet_id,
+                "to": process.env.TREASURY_ADDRESS,
+                "quantity": amount,
+            })
+        }
+
+        const url = process.env.LUMX_API_URL + "/transactions/transfers";
+
+        const responseLumx = await fetch(url, options);
+        const responseJson = await responseLumx.json();
         
 
-
+        res.status(200).send({
+            "tx_id": responseJson
+        });
 
     } catch(err) {
         console.log(err);
