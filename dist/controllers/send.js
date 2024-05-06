@@ -17,13 +17,17 @@ const db_1 = __importDefault(require("../db"));
 function sendTokens(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { wallet_id, event_id } = req.body;
-            if (!wallet_id || !event_id) {
+            const { referral_code, event_id } = req.body;
+            if (!referral_code || !event_id) {
                 res.status(400).send({
                     "error": "Bad Request"
                 });
                 return;
             }
+            const wallets = yield db_1.default.query(`
+            SELECT wallet_id FROM influencers WHERE referral_code = $1;
+        `, [referral_code]);
+            const wallet_id = wallets.rows[0].wallet_id;
             const amounts = yield db_1.default.query(`
             SELECT reward_per_sell FROM events WHERE id = $1;
         `, [event_id]);
