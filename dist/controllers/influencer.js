@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBalanceByWalletId = void 0;
+exports.withdraw = exports.getBalanceByWalletId = void 0;
 function getBalanceByWalletId(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -56,3 +56,41 @@ function getBalanceByWalletId(req, res) {
     });
 }
 exports.getBalanceByWalletId = getBalanceByWalletId;
+function withdraw(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { wallet_id, amount } = req.body;
+            if (!wallet_id || !amount) {
+                return res.status(400).send({
+                    "error": "Bad Request"
+                });
+            }
+            const options = {
+                method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${process.env.LUMX_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "contractId": process.env.TOKEN_ID,
+                    "from": wallet_id,
+                    "to": process.env.TREASURY_ADDRESS,
+                    "quantity": amount,
+                })
+            };
+            const url = process.env.LUMX_API_URL + "/transactions/transfers";
+            const responseLumx = yield fetch(url, options);
+            const responseJson = yield responseLumx.json();
+            res.status(200).send({
+                "tx_id": responseJson
+            });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).send({
+                "error": "Internal Server Error"
+            });
+        }
+    });
+}
+exports.withdraw = withdraw;

@@ -18,7 +18,7 @@ function signup(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             //get body from request
-            const { email, name } = req.body;
+            const { email, name, password } = req.body;
             if (!email) {
                 res.status(400).send({
                     "error": "Bad Request"
@@ -40,11 +40,11 @@ function signup(req, res) {
             const referralCode = Math.random().toString(36).substring(2, 10);
             yield db_1.default.query(`
       INSERT INTO influencers(
-        name, email, wallet_id, wallet_address, referral_code
+        name, password, email, wallet_id, wallet_address, referral_code
       ) VALUES (
-        $1, $2, $3, $4, $5
+        $1, $2, $3, $4, $5, $6
       );
-    `, [name, email, walletId, walletAddress, referralCode]);
+    `, [name, password, email, walletId, walletAddress, referralCode]);
             res.status(200).send({
                 "wallet_id": walletId,
                 "wallet_address": walletAddress,

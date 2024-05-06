@@ -21,11 +21,13 @@ const signup_1 = require("./controllers/signup");
 const send_1 = require("./controllers/send");
 const event_1 = require("./controllers/event");
 const influencer_1 = require("./controllers/influencer");
+const signin_1 = require("./controllers/signin");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const port = process.env.PORT || 3000;
 app.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () { return yield (0, signup_1.signup)(req, res); }));
+app.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () { return yield (0, signin_1.signin)(req, res); }));
 app.post('/send', (req, res) => __awaiter(void 0, void 0, void 0, function* () { return yield (0, send_1.sendTokens)(req, res); }));
 app.get('/', (req, res) => {
     res.send('Hello World!');
